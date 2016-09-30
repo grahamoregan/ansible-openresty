@@ -1,0 +1,19 @@
+- name: Install OpenResty
+  hosts: openresty
+  become: yes
+
+  vars:
+    server_name: 'www.yourdomain.com'
+    openresty_version: '1.11.2.1'
+    
+    downstream_service:
+        - host: "otherservice.com"
+        - credentials: "username:password"
+    
+    # add an item to this list to add an account
+    api_accounts:
+      - { username: 'XXXXXXXXXX', password: 'YYYYYYYYY' }
+
+  roles:
+    - openresty
+    

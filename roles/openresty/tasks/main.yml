@@ -1,0 +1,50 @@
+- apt:
+    pkg='nginx'
+    update_cache=yes
+
+- apt: pkg="{{ item }}"
+  with_items:
+    - 'build-essential'
+    - 'libpcre3-dev'
+    - 'libssl-dev'
+    - 'libgeoip-dev'
+    - 'python-passlib'
+
+- get_url:
+    url='https://openresty.org/download/openresty-{{ openresty_version }}.tar.gz'
+    dest='/tmp'
+
+- unarchive:
+    src='/tmp/openresty-{{ openresty_version }}.tar.gz'
+    dest='/tmp'
+    copy=no
+
+- template:
+    src="openresty_build.sh.j2"
+    dest="/tmp/openresty-{{ openresty_version }}/openresty_build.sh"
+    mode="0755"
+
+- command: /tmp/openresty-{{ openresty_version }}/openresty_build.sh
+
+# the file in sites-available is symlinked to sites-enabled
+- template:
+    src="etc/nginx/sites-enabled/default.j2"
+    dest="/etc/nginx/sites-available/default"
+    mode="0644"
+  tags:
+    - nginx
+  notify:
+    - restart nginx
+
+- htpasswd:
+    path='/var/www/.htpasswd'
+    name='{{ item.username }}'
+    password='{{ item.password }}'
+    owner=root
+    group=www-data
+    mode=0640
+  with_items: api_accounts
+  tags:
+    - nginx
+  notify:
+    - restart nginx
