@@ -7,8 +7,8 @@
     openresty_version: '1.11.2.1'
     
     downstream_service:
-        - host: "otherservice.com"
-        - credentials: "username:password"
+        host: "otherservice.com"
+        credentials: "username:password"
     
     # add an item to this list to add an account
     api_accounts:
