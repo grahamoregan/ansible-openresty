@@ -40,10 +40,10 @@
     path='/var/www/.htpasswd'
     name='{{ item.username }}'
     password='{{ item.password }}'
-    owner=root
-    group=www-data
-    mode=0640
-  with_items: api_accounts
+    owner='www-data'
+    group='www-data'
+    mode='0640'
+  with_items: '{{ api_accounts }}'
   tags:
     - nginx
   notify:
